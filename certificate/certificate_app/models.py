@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-class RegistrationNumber(models.Model):
+class Registration(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     registration_number = models.CharField(max_length=8,editable=False,unique=True)
 
@@ -14,15 +14,15 @@ class RegistrationNumber(models.Model):
 
     def save(self, *args, **kwargs):
         self.registration_number = "".join(random.choices(string.digits,k=8))
-        super(RegistrationNumber, self).save(*args, **kwargs)
+        super(Registration, self).save(*args, **kwargs)
 
 class Certificate(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
-    registration = models.OneToOneField(RegistrationNumber,on_delete=models.CASCADE)
     certificate_number = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
+    certificate_url = models.URLField()
 
     def __str__(self):
-        return f'{self.certificate_number} {self.user.first_name}'
+        return f'{self.user.get_full_name()} - {self.certificate_number}'
 
 
 PROJECT_WORKED_CHOICE = [

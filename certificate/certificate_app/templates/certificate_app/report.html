@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<nav class="bg-light">
+    <ul class="nav nav-tabs px-5 pt-4">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Personal Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Projects Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Report Details</a>
+        </li>
+    </ul>
+</nav>
+<div class="container my-3">
+    <div class="bg-light p-md-4 p-2">
+        <div class="mx-auto" style="max-width: 500px;">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3 row">
+                    {{ form.project_name.errors }}
+                    <label for="{{ form.project_name.id_for_label }}" class="col-sm-4 col-form-label">Project Name :</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="project_name" maxlength="100" required="" id="id_project_name" value="{{request.user.report.project_name}}">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="{{ form.project_name.id_for_label }}" class="col-sm-4 col-form-label">Currently Upload Report :</label>
+                    <a class="col-sm-8" href={{request.user.report.upload_report.url}}>{{request.user.report.upload_report}}</a>
+                </div>
+                <div class="mb-3 row">
+                    {{ form.upload_report.errors }}
+                    <label for="{{ form.project_name.id_for_label }}" class="col-sm-4 col-form-label">Upload New Report :</label>
+                    <input class="col-sm-8" type="file" name="upload_report" required="" id="id_upload_report">
+                </div>
+                <button class="btn btn-sm btn-primary" type="submit">Update</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

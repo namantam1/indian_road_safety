@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h2 class="bg-light p-4 my-2">Intern details</h2>
+    <div class="bg-light p-2 py-4 rounded">
+        <h4 class="text-center p-2 mb-4 border-bottom">Personal Details</h4>
+        <div class="my-2">
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong> ID</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.user.email}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>First Name</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.user.first_name}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Last Name</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.user.last_name}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Phn Contact No.</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.ph_contact_no}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>WhatsApp No.</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.whatsapp_no}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Project</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.project}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Profile</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.profile}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Type of Intership</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.type_of_internship}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Joining Date</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.joining_date}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>PAN Number</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.pan_number}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Aadhaar No.</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.aadhar}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Emergency Contact No.</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.emergency_contact_no}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Bank Account Number</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.bank_account_no}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>IFSC Code</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.ifsc_code}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>DOB</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.dob}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Permanent Address</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.permanent_address}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Current Address</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.current_address}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>BioMetric ID Number</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.biometric_id_number}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Intership Tenure</strong></div>
+                <div class="col-8 align-self-center">
+                    {{details.get_intership_tenure_display}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Resume</strong></div>
+                <div class="col-8 align-self-center">
+                    <a href="{{details.resume}}">Link</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-light my-2 p-2 py-4 rounded">
+        <h4 class="text-center p-2 mb-4 border-bottom">Project Details</h4>
+        {% if project %}
+        <div class="my-2">
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Profile</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.profile}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Project Worked on</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.project_worked_on}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Status</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.get_status_display}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Tenure</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.tenure}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Joining Date</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.joining_data}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>End Date</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.end_date}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Upload Traker Link</strong></div>
+                <div class="col-8 align-self-center">
+                    <a href="{{project.upload_traker_link}}">{{project.upload_traker_link}}</a>
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Alotted Mentor / Team Leader</strong></div>
+                <div class="col-8 align-self-center">
+                    {{project.mentor_or_leader}}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <h5 class="pl-sm-5">Project not alloted to user.</h5>
+        {% endif %}
+    </div>
+
+    <div class="bg-light my-2 p-2 py-4 mb-5 rounded">
+        <h4 class="text-center p-2 mb-4 border-bottom">Report Details</h4>
+        {% if report %}
+        <div class="my-2">
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Project Name</strong></div>
+                <div class="col-8 align-self-center">
+                    {{report.project_name}}
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Uploaded Report</strong></div>
+                <div class="col-8 align-self-center text-break">
+                    <a href="{{report.upload_report}}">Report Link</a>
+                </div>
+            </div>
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Status</strong></div>
+                <div class="col-8 align-self-center text-break">
+                    {{report.get_status_display}}
+                </div>
+            </div>
+            {% if user.certificate %}
+            <div class="row px-sm-5 my-2">
+                <div class="col-4"><strong>Certificate Generated</strong></div>
+                <div class="col-8 align-self-center text-break">
+                    <a href="">View</a>
+                </div>
+            </div>
+            {% else %}
+            <div class="d-flex justify-content-center mt-5">
+                    {% if report.status == 'A' %}
+                    <a class="btn btn-success mx-5" href="{% url 'create_certificate' user.id %}">Generate certificate</a>
+                    {% elif report.status == 'P' %}
+                    <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=A" class="btn btn-success mx-5">Approve</a>
+                    <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=R" class="btn btn-danger mx-5">Reject</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <h5 class="pl-sm-5">Report not submitted.</h5>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

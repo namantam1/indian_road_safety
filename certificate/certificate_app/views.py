@@ -7,6 +7,7 @@ from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.core.mail import EmailMessage
 from django.contrib.auth import login,authenticate
 
+from .models import Registration
 from .forms import UserCreationForm,SignupForm,User
 from .token import emailactivationtokengenarator
 
@@ -65,17 +66,6 @@ def useractivation(request,uibd64,token):
             return redirect('home')
         return render(request,'certificate_app/usercreation.html',{'form':form})
     
-
-
-def userCreation(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        print(form.errors)
-        return render(request,'usercreation_app/usercreation.html',{'form':form})
-    raise 404
 
 
 

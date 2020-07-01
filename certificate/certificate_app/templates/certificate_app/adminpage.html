@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="navbar navbar-expand-lg navbar-light bg-light mb-2">
+        <div class="container-fluid">
+            <h3>Internship Details and Certificate</h3>
+            <!-- <div class="collapse navbar-collapse"> -->
+                <!-- <ul class="navbar-nav mr-auto mb-2 mb-lg-0"></ul> -->
+                <div class="ml-auto d-flex">
+                    <ul class="navbar-nav">
+                        <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.username}}</strong></li>
+                        <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+                    </ul>
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+    <div class="bg-light p-5 rounded">
+        <form class="row row-cols-md-auto g-3 align-items-center">
+            <div class="col-12">
+                <select class="form-select" aria-label="Default select example" id="select" onchange="selectType()">
+                    <option selected value='1'>search Intern by</option>
+                    <option value="first_name">First Name</option>
+                    <option value="last_name">Last Name</option>
+                    <option value="reg_number">Registration Number</option>
+                    <option value="days_from_now">Internship ending within days from now</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <input disabled class="form-control" type="text" name="" id="searchfield" min="0">
+            </div>
+            <div class="col-12">
+                <button class='btn btn-sm btn-primary' type="submit">search</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="table-responsive bg-light mt-3 px-1">
+    <table class="table text-center">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Details</th>
+                <th scope="col">Reg. No.</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Mentor</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Report</th>
+                <th scope="col">Marked status</th>
+                <th scope="col">Certificate Generated</th>
+                <th scope="col">Certificate Serial No.</th>
+            </tr>
+        </thead>
+        <tbody>
+                {% for u in user %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}.</th>
+                    <td><a class="text-decoration-none" href="{% url 'interndetail' u.id %}">view</a></td>
+                    <td>{{u.registration.registration_number}}</td>
+                    <td>{{u.first_name}}</td>
+                    <td>{{u.last_name}}</td>
+                    <td>{{u.project.mentor_or_leader}}</td>
+                    <td>{{u.project.joining_data}}</td>
+                    <td>{{u.project.end_date}}</td>
+                    {% if u.report %}
+                        <td>Submitted</td>
+                        <td>{{u.report.get_status_display}}</td>
+                    {% else %}
+                        <td>Not Submitted</td>
+                        <td>-</td>
+                    {% endif %}
+
+                    {% if u.certificate %}
+                        <td>yes</td>
+                        <td><a class="text-decoration-none" href="{{u.certificate.certificate_url}}">{{u.certificate.certificate_number}}</a></td>
+                    {% else %}
+                        <td>No</td>
+                        <td>-</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+        </tbody>
+    </table>
+    {% if not user %}
+    <h2>No search results.</h2>
+    {% endif %}
+</div>
+<script>
+    function selectType() {
+        var option = document.getElementById('select')
+        var searchfield = document.getElementById('searchfield')
+        searchfield.name = option.value
+        if (option.value == 'days_from_now') {
+            searchfield.type = 'number'
+            searchfield.placeholder = 'days'
+        }
+        else{
+            searchfield.type = 'text'
+            searchfield.placeholder = option.options[option.selectedIndex].text
+        }
+        if(option.value=='1'){
+            searchfield.disabled = true
+        }
+        else searchfield.disabled = false
+    }
+</script>
+{% endblock content %}

@@ -3,6 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.exceptions import ValidationError
+from .models import PersonalDetail,Project
 
 class UserCreationForm(ucf):
     class Meta():
@@ -21,3 +22,13 @@ class SignupForm(ModelForm):
         if User.objects.filter(email=email).exists():
             msg = 'Email already exists.'
             self.add_error('email', msg)
+
+class PersonalDetailForm(ModelForm):
+    class Meta():
+        model = PersonalDetail
+        fields = "__all__"
+
+class ProjectForm(ModelForm):
+    class Meta():
+        model = Project
+        fields = "__all__"

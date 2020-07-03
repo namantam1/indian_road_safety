@@ -5,13 +5,13 @@
         <div class="container-fluid">
             <h3>Internship Details and Certificate</h3>
             <!-- <div class="collapse navbar-collapse"> -->
-                <!-- <ul class="navbar-nav mr-auto mb-2 mb-lg-0"></ul> -->
-                <div class="ml-auto d-flex">
-                    <ul class="navbar-nav">
-                        <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.username}}</strong></li>
-                        <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
-                    </ul>
-                </div>
+            <!-- <ul class="navbar-nav mr-auto mb-2 mb-lg-0"></ul> -->
+            <div class="ml-auto d-flex">
+                <ul class="navbar-nav">
+                    <li class="nav-item px-1"><strong class="nav-link">Hi {{request.user.get_full_name}}</strong></li>
+                    <li class="nav-item px-1"><a class="nav-link" href="{% url 'logout' %}">signout</a></li>
+                </ul>
+            </div>
             <!-- </div> -->
         </div>
     </div>
@@ -54,33 +54,74 @@
             </tr>
         </thead>
         <tbody>
-                {% for u in user %}
-                <tr>
-                    <th scope="row">{{forloop.counter}}.</th>
-                    <td><a class="text-decoration-none" href="{% url 'interndetail' u.id %}">view</a></td>
-                    <td>{{u.registration.registration_number}}</td>
-                    <td>{{u.first_name}}</td>
-                    <td>{{u.last_name}}</td>
-                    <td>{{u.project.mentor_or_leader}}</td>
-                    <td>{{u.project.joining_data}}</td>
-                    <td>{{u.project.end_date}}</td>
-                    {% if u.report %}
-                        <td>Submitted</td>
-                        <td>{{u.report.get_status_display}}</td>
-                    {% else %}
-                        <td>Not Submitted</td>
-                        <td>-</td>
-                    {% endif %}
+            {% for u in user %}
+            <tr>
+                <th scope="row">{{forloop.counter}}.</th>
+                <td><a style="cursor: pointer;" class="text-decoration-none" data-toggle="modal"
+                        data-target="#exampleModal{{u.id}}">view</a></td>
 
-                    {% if u.certificate %}
-                        <td>yes</td>
-                        <td><a class="text-decoration-none" href="{{u.certificate.certificate_url}}">{{u.certificate.certificate_number}}</a></td>
-                    {% else %}
-                        <td>No</td>
-                        <td>-</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal{{u.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" style="max-width: 90%;">
+                        <div class="modal-content mb-4">
+                            <div class="modal-header bg-light p-3">
+                                <!-- <h5 class="modal-title" id="exampleModalLabel">Modal title</h5> -->
+                                <h5 class="modal-title">Intern details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body{{u.id}}">
+                                <div>
+                                    {% include 'certificate_app/interndetail.html' with user=u project=u.project report=u.report details=u.personaldetail %}
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% comment %}
+                <script>
+                    var myModal = document.getElementById('exampleModal{{u.id}}')
+
+                    myModal.addEventListener('shown.bs.modal', function () {
+                        $.ajax({
+                            url: "{% url 'interndetail' u.id %}",
+                            success: (data) => {
+                                $('.modal-body{{u.id}}').append(data)
+                            }
+                        });
+                    })
+                </script> {% endcomment %}
+
+                <td>{{u.registration.registration_number}}</td>
+                <td>{{u.first_name}}</td>
+                <td>{{u.last_name}}</td>
+                <td>{{u.project.mentor_or_leader}}</td>
+                <td>{{u.project.joining_date}}</td>
+                <td>{{u.project.end_date}}</td>
+                {% if u.report %}
+                <td>Submitted</td>
+                <td>{{u.report.get_status_display}}</td>
+                {% else %}
+                <td>Not Submitted</td>
+                <td>-</td>
+                {% endif %}
+
+                {% if u.certificate %}
+                <td>yes</td>
+                <td><a class="text-decoration-none"
+                        href="{{u.certificate.certificate_pdf.url}}">{{u.certificate.certificate_number}}</a></td>
+                {% else %}
+                <td>No</td>
+                <td>-</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
         </tbody>
     </table>
     {% if not user %}
@@ -96,14 +137,60 @@
             searchfield.type = 'number'
             searchfield.placeholder = 'days'
         }
-        else{
+        else {
             searchfield.type = 'text'
             searchfield.placeholder = option.options[option.selectedIndex].text
         }
-        if(option.value=='1'){
+        if (option.value == '1') {
             searchfield.disabled = true
         }
         else searchfield.disabled = false
+    }
+    function changestatus(self,url,id,ckturl){
+        self = $(self)
+        self.children('span').show()
+        $.ajax({
+            url:url,
+            success:(data) => {
+                self.children('span').hide()
+                // console.log(data,self.text())
+                if(self.text().trim()=='Approve'){
+                    $(`#status${id}`).text('Approved')
+                    $('.statuschange').hide('normal')
+                    var btn = `<button class="btn btn-success mx-5"onclick="generatecertificate(this,'${ckturl}')"><span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>Generate Certificate</button>`
+                    $('.statuschange').parent().append(btn).hide().show('normal')
+                }else{
+                    $(`#status${id}`).text('Rejected')
+                    $('.statuschange').hide('normal')
+                }
+            },
+            error:(data) => {
+                self.children('span').hide()
+                console.log('something went wrong',data)
+            }
+        })
+    }
+
+    function generatecertificate(self,url){
+        self = $(self)
+        self.children('span').show()
+        $.ajax({
+            url:url,
+            success:(data) => {
+                self.children('span').hide()
+                self.hide('normal')
+                // console.log(data)
+                pdfurl = data['pdfurl']
+                pngurl = data['pngurl']
+                ckt = $(`<div class="row px-sm-5 my-2"><div class="col-4"><strong>Certificate Generated</strong></div><div class="col-8 align-self-center text-break"><a href=${pdfurl} target="=_blank">PDF</a> <a href=${pngurl} download target="=_blank"> PNG</a></div></div>`).hide()
+                ckt.insertAfter('#statusdiv').show('normal')
+                // $('#report').append(ckt.show('normal'))
+            },
+            error:(data) => {
+                self.children('span').hide()
+                console.log(data)
+            }
+        })
     }
 </script>
 {% endblock content %}

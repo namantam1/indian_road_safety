@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes,force_text
 from django.template.loader import render_to_string
@@ -8,7 +8,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth import login,authenticate
 
 from .models import Registration
-from .forms import UserCreationForm,SignupForm,User
+from .forms import UserCreationForm,SignupForm,User,PersonalDetailForm,ProjectForm
 from .token import emailactivationtokengenarator
 
 # Create your views here.
@@ -65,7 +65,30 @@ def useractivation(request,uibd64,token):
             form.save()
             return redirect('home')
         return render(request,'certificate_app/usercreation.html',{'form':form})
-    
 
 
+def personal_detail(request):
+    form = PersonalDetailForm()
+    if request.method == 'POST':
+        form = PersonalDetailForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('personal_form')
+    return render(request,'certificate_app/personal_form.html',{'form':form})
 
+def project_detail(request):
+    form = ProjectForm()
+    if request.method == 'POST':
+        form = ProjectForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('personal_form')
+    return render(request,'certificate_app/project_form.html',{'form':form})
+
+
+def test(request):
+    if request.is_ajax():
+        data = render_to_string('certificate_app/test.html')
+        return JsonResponse(data, safe=False)
+    # return render(request,'certificate_app/reportview.html')
+    return JsonResponse({'data':None})

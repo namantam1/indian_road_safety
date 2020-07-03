@@ -1,8 +1,8 @@
-{% extends 'base.html' %}
-{% block content %}
+{% comment %} {% extends 'base.html' %}
+{% block content %} {% endcomment %}
 <div class="container">
-    <h2 class="bg-light p-4 my-2">Intern details</h2>
-    <div class="bg-light p-2 py-4 rounded">
+    <!-- <h2 class="bg-light p-4 my-2">Intern details</h2> -->
+    <div class="bg-light my-2 p-2 py-4 rounded">
         <h4 class="text-center p-2 mb-4 border-bottom">Personal Details</h4>
         <div class="my-2">
             <div class="row px-sm-5 my-2">
@@ -68,7 +68,7 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Aadhaar No.</strong></div>
                 <div class="col-8 align-self-center">
-                    {{details.aadhar}}
+                    {{details.aadhaar}}
                 </div>
             </div>
             <div class="row px-sm-5 my-2">
@@ -116,13 +116,13 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Intership Tenure</strong></div>
                 <div class="col-8 align-self-center">
-                    {{details.get_intership_tenure_display}}
+                    {{details.internship_tenure}}
                 </div>
             </div>
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Resume</strong></div>
                 <div class="col-8 align-self-center">
-                    <a href="{{details.resume}}">Link</a>
+                    <a href="{{details.resume.url}}" target="_blank">Link</a>
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Status</strong></div>
                 <div class="col-8 align-self-center">
-                    {{project.get_status_display}}
+                    {{project.status}}
                 </div>
             </div>
             <div class="row px-sm-5 my-2">
@@ -159,7 +159,7 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Joining Date</strong></div>
                 <div class="col-8 align-self-center">
-                    {{project.joining_data}}
+                    {{project.joining_date}}
                 </div>
             </div>
             <div class="row px-sm-5 my-2">
@@ -171,7 +171,7 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Upload Traker Link</strong></div>
                 <div class="col-8 align-self-center">
-                    <a href="{{project.upload_traker_link}}">{{project.upload_traker_link}}</a>
+                    <a href="{{project.upload_traker_link}}" target="_blank">{{project.upload_traker_link}}</a>
                 </div>
             </div>
             <div class="row px-sm-5 my-2">
@@ -186,10 +186,10 @@
         {% endif %}
     </div>
 
-    <div class="bg-light my-2 p-2 py-4 mb-5 rounded">
+    <div class="bg-light my-2 p-2 py-4 rounded">
         <h4 class="text-center p-2 mb-4 border-bottom">Report Details</h4>
         {% if report %}
-        <div class="my-2">
+        <div id="report" class="my-2">
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Project Name</strong></div>
                 <div class="col-8 align-self-center">
@@ -199,36 +199,50 @@
             <div class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Uploaded Report</strong></div>
                 <div class="col-8 align-self-center text-break">
-                    <a href="{{report.upload_report}}">Report Link</a>
+                    <a href="{{report.upload_report.url}}" target="_blank">Report Link</a>
                 </div>
             </div>
-            <div class="row px-sm-5 my-2">
+            <div id="statusdiv" class="row px-sm-5 my-2">
                 <div class="col-4"><strong>Status</strong></div>
-                <div class="col-8 align-self-center text-break">
+                <div id="status{{user.id}}" class="col-8 align-self-center text-break">
                     {{report.get_status_display}}
                 </div>
             </div>
             {% if user.certificate %}
-            <div class="row px-sm-5 my-2">
-                <div class="col-4"><strong>Certificate Generated</strong></div>
-                <div class="col-8 align-self-center text-break">
-                    <a href="">View</a>
+                <div class="row px-sm-5 my-2">
+                    <div class="col-4"><strong>Certificate Generated</strong></div>
+                    <div class="col-8 align-self-center text-break">
+                        <a href="{{user.certificate.certificate_pdf.url}}" target="=_blank">PDF</a>
+                        <a href="{{user.certificate.certificate_png.url}}" download target="=_blank">PNG</a>
+                    </div>
                 </div>
-            </div>
             {% else %}
-            <div class="d-flex justify-content-center mt-5">
+                <div class="d-flex justify-content-center mt-5">
                     {% if report.status == 'A' %}
-                    <a class="btn btn-success mx-5" href="{% url 'create_certificate' user.id %}">Generate certificate</a>
+                    <!-- <a class="btn btn-success mx-5" href="">Generate certificate</a> -->
+                    <button class="btn btn-success mx-5" onclick="generatecertificate(this,`{% url 'create_certificate' user.id %}`)">
+                        <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>Generate Certificate
+                    </button>
                     {% elif report.status == 'P' %}
-                    <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=A" class="btn btn-success mx-5">Approve</a>
-                    <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=R" class="btn btn-danger mx-5">Reject</a>
+                    <!-- <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=A"
+                        class="btn btn-success mx-5">Approve</a>
+                    <a href="{% url 'change_status' user.id %}?next={{request.get_full_path}}&status=R"
+                        class="btn btn-danger mx-5">Reject</a> -->
+                    <div> 
+                        <button class="statuschange btn btn-success mx-5" onclick="changestatus(this,`{% url 'change_status' user.id %}?status=A`,`{{user.id}}`,`{% url 'create_certificate' user.id %}`)">
+                            <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>Approve
+                        </button>
+                        <button class="statuschange btn btn-danger mx-5" onclick="changestatus(this,`{% url 'change_status' user.id %}?status=R`,`{{user.id}}`,`{% url 'create_certificate' user.id %}`)">
+                            <span class="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" style="display: none;"></span>Reject
+                        </button>
+                    </div>
                     {% endif %}
-                {% endif %}
-            </div>
+                </div>
+            {% endif %}
         </div>
         {% else %}
         <h5 class="pl-sm-5">Report not submitted.</h5>
         {% endif %}
     </div>
 </div>
-{% endblock content %}
+{% comment %} {% endblock content %} {% endcomment %}

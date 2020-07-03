@@ -1,22 +1,9 @@
-"""certificate URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf import settings
+from django.conf.urls.static import  static
 from django.contrib import admin
 from django.urls import path,include
 from django.contrib.auth.views import TemplateView,PasswordResetView,LoginView,LogoutView
-from certificate_app.views import signup,useractivation
+from certificate_app.views import signup,useractivation,personal_detail,project_detail,test
 from certificate_app.reportsubmissionview import reportview,reportupdate
 from certificate_app.certificateview import adminpage,intern_detail,create_certificate,change_status
 
@@ -39,4 +26,12 @@ urlpatterns = [
     path('interdetail/<pk>',intern_detail,name='interndetail'),
     path('createcertificate/<pk>',create_certificate,name='create_certificate'),
     path('interndetail/<pk>',change_status,name='change_status'),
+
+
+    #personal detail
+    path('personalform',personal_detail,name="personal_form"),
+    path('projectform',project_detail,name="project_form"),
+    path('test',test,name="test"),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
